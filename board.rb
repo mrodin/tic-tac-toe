@@ -2,6 +2,8 @@ require './cell.rb'
 
 class Board
 
+  attr_reader :grid
+
   def initialize
     @grid = create_board
   end
@@ -14,15 +16,6 @@ class Board
     puts '-+-------+'
     puts '---a b c'
   end
-
-  # def draw_position
-  #   puts '-+-------+'
-  #   puts "3| #{@grid[0][0].position} #{@grid[0][1].position} #{@grid[0][2].position} |"
-  #   puts "2| #{@grid[1][0].position} #{@grid[1][1].position} #{@grid[1][2].position} |"
-  #   puts "1| #{@grid[2][0].position} #{@grid[2][1].position} #{@grid[2][2].position} |"
-  #   puts '-+-------+'
-  #   puts '---a b c'
-  # end
 
   def place_symbol(x, y, symbol)
     @grid[y][x].symbol = symbol
