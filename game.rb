@@ -5,8 +5,6 @@ class Game
 
   WIN_CASES = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
 
-  attr_reader :board
-
   def initialize
     @game_over = false
     @player_x = Player.new('X', 'Player X')
@@ -14,17 +12,27 @@ class Game
     @on_move = @player_x
     @board = Board.new
     @board.draw_board
+    start_game
   end
 
   def start_game
-    while(!@game_over)
-      puts "#{@on_move.name}, make your move:"
-      coordinates = gets.chomp
-      place_symbol(coordinates, @on_move.symbol.to_s)
+    while !@game_over
+      begin
+        puts "#{@on_move.name}, make your move:"
+        coordinates = gets.chomp
+        if check_empty_cell(coordinates)
+          place_symbol(coordinates, @on_move.symbol.to_s)
+        else
+          raise 'Invalid input'
+        end
+      rescue
+        puts 'Not a valid input.'
+        retry
+      end
 
       @board.draw_board
 
-      if(check_win(@on_move.symbol.to_s))
+      if check_win(@on_move.symbol.to_s)
         puts "#{@on_move.name} wins!"
         @game_over = true
       end
@@ -69,6 +77,7 @@ class Game
     translate_coordinate(y)
   end
 
+  # checks if some win condition is met
   def check_win(symbol)
     WIN_CASES.each do |i|
       diff = i - scan_symbol_positions(symbol)
@@ -77,6 +86,7 @@ class Game
     false
   end
 
+  # scans the board to get positions of symbols
   def scan_symbol_positions(symbol)
     positions = []
     @board.grid.each do |i|
@@ -89,7 +99,11 @@ class Game
     positions
   end
 
+  # checks if the cell is empty
+  def check_empty_cell(coordinates)
+    return true if @board.grid[get_y(coordinates)][get_x(coordinates)].symbol == '.'
+  end
+
 end
 
 game = Game.new
-game.start_game
